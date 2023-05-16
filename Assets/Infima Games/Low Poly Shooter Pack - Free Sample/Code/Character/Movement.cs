@@ -36,8 +36,9 @@ namespace InfimaGames.LowPolyShooterPack
         [Tooltip("How powerful the player's jump force is."), SerializeField]
         private float jumpForce = 10f;
         [Tooltip("Gravity Strength"), SerializeField]
-        private float gravityForce = 1f;
-        [SerializeField] private float gravityMultiplier = 1f;
+        private float gravityMultiplier = 1f;
+        private float gravityMaxSpeed = 10f;
+        private Vector3 gravityForce = Vector3.down;
 
 
         #endregion
@@ -146,7 +147,7 @@ namespace InfimaGames.LowPolyShooterPack
         protected override void FixedUpdate()
         {
             //Move.
-            MoveCharacter();
+            //MoveCharacter();
             
             //Unground.
             grounded = false;
@@ -158,14 +159,14 @@ namespace InfimaGames.LowPolyShooterPack
             //Get the equipped weapon!
             equippedWeapon = playerCharacter.GetInventory().GetEquipped();
             // Control Drag
-            ControlDrag();
+            //ControlDrag();
 
             //Play Sounds!
             PlayFootstepSounds();
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Jump();
+                //Jump();
             }
         }
 
@@ -173,6 +174,7 @@ namespace InfimaGames.LowPolyShooterPack
 
         #region METHODS
 
+        /*
         private void MoveCharacter()
         {
             #region Calculate Movement Velocity
@@ -180,7 +182,7 @@ namespace InfimaGames.LowPolyShooterPack
             //Get Movement Input!
             Vector2 frameInput = playerCharacter.GetInputMovement();
             //Calculate local-space direction by using the player's input.
-            var movement = new Vector3(frameInput.x, rigidBody.velocity.y, frameInput.y);
+            var movement = new Vector3(frameInput.x, 0, frameInput.y);
             
             //Running speed calculation.
             if(playerCharacter.IsRunning())
@@ -195,9 +197,16 @@ namespace InfimaGames.LowPolyShooterPack
             movement = transform.TransformDirection(movement);
 
             #endregion
-            
-            //Update Velocity.
-            Velocity = new Vector3(movement.x, movement.y, movement.z);
+            if (grounded)
+            {
+                //Update Velocity.
+                Velocity = new Vector3(movement.x, 0, movement.z);
+            }
+            else 
+            {   
+
+                Velocity = new Vector3(movement.x, Mathf.Clamp(gravityForce.y, 0, gravityMaxSpeed), movement.z);
+            }
         }
 
         private void Jump()
@@ -220,9 +229,11 @@ namespace InfimaGames.LowPolyShooterPack
             else
             {
                 rigidBody.drag = airDrag;
-                rigidBody.AddForce(-transform.up * gravityForce, ForceMode.Force);
+                //rigidBody.AddForce(-transform.up * gravityForce, ForceMode.Acceleration);
             }
         }
+
+        */
 
         /// <summary>
         /// Plays Footstep Sounds. This code is slightly old, so may not be great, but it functions alright-y!
